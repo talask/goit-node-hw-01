@@ -1,4 +1,5 @@
-const { nanoid } = require('nanoid');
+//const { nanoid } = require('nanoid');
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -6,7 +7,7 @@ const contactsPath = path.join(__dirname, 'db', 'contacts.json');
 
 
 
-// TODO: задокументувати кожну функцію
+// Функція зчитує дані файлу contacts.json і виводить їх у консоль
 function listContacts() {
     fs.readFile(contactsPath)
     .then(
@@ -23,6 +24,7 @@ function listContacts() {
   }
  // listContacts();
  
+ // Функція здійснює пошук контакту за id в файлі contacts.json і виводить результат пошуку у консоль
   function getContactById(contactId) {
     fs.readFile(contactsPath)
   .then(
@@ -39,7 +41,9 @@ function listContacts() {
   }
   //getContactById("rsKkOQUi80UsgVPCcLZZW");
   
+  // Функція здійснює видалення контакту за id в файлі contacts.json і виводить результат видалення у консоль
   function removeContact(contactId) {
+    console.log("remove")
     fs.readFile(contactsPath)
   .then(
     data => {
@@ -50,28 +54,32 @@ function listContacts() {
       const findContact = contacts.find(({id}) =>  id === contactId );
 
       console.log(findContact ? `${findContact.name.padEnd(20, ' ')} ${findContact.email.padEnd(50, ' ')} ${findContact.phone.padEnd(15, ' ')}` : null);
+      
 
       if (findContact) {
 
-        const filterContact = contacts.find(({id}) =>  id !== contactId );
-
+        const filterContact = contacts.filter(({id}) =>  id !== contactId );
+      
         fs.writeFile(contactsPath, JSON.stringify(filterContact))
         .then( data => {
-          console.log("data");
-          console.log(data);
+          
+          console.log("The contact has been removed from the contact list");
         })
         .catch(err => console.log(err.message));
 
+      }else {
+        console.log("Contact not found to the contact list")
       }
       })
   .catch(err => console.log(err.message));
   }
   
-  removeContact("rsKkOQUi80UsgVPCcLZZW1");
+ //removeContact("3f9abc10-c572-47b4-8f81-7d20b0badc13");
 
+  // Функція додає контакт за name, email, phone в файл contacts.json і виводить результат  у консоль
   function addContact(name, email, phone) {
-    
-    const id =  nanoid();
+    console.log("add")
+    const id =   uuidv4();
 
     const newObj = {
       id,
@@ -79,15 +87,44 @@ function listContacts() {
       email,
       phone,
     };
-    const jsonData = JSON.stringify(newObj);
+    
 
-    fs.appendFile(contactsPath, jsonData)
+    fs.readFile(contactsPath)
     .then( data => {
-      console.log("data");
-      console.log(data);
+      const contacts = JSON.parse(data);
+      
+      const findContact = contacts.find(contact =>  contact.name === name && contact.email === email && contact.phone === phone );
+
+
+      console.log("   Name".padEnd(20, ' '), "   Email".padEnd(50, ' '), "   Phone".padEnd(15, ' '));
+        console.log( `${name.padEnd(20, ' ')} ${email.padEnd(50, ' ')} ${phone.padEnd(15, ' ')}` );
+
+
+      if(findContact) { 
+        
+        console.log("The contact is in the contact list");
+        return;
+      }
+
+      contacts.push(newObj);
+      fs.writeFile(contactsPath, JSON.stringify(contacts))
+        .then( data => {
+          
+          console.log("Contact added to the contact list");
+        })
+        .catch(err => console.log(err.message));
+      
     })
     .catch(err => console.log(err.message));
 
   }
 
-  addContact("Rose Rose", "roserose@ukr.net", "(678)657-67-95")
+  //addContact("Lulu Lulu", "luluLulu2@ukr.net", "(608)677-60-95")
+
+  module.exports = {
+    listContacts,
+    getContactById,
+    addContact,
+    removeContact,
+  };
+  
