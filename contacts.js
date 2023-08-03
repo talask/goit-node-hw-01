@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+const { nanoid } = require('nanoid');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -71,8 +71,10 @@ function listContacts() {
 
   function addContact(name, email, phone) {
     
+    const id =  nanoid();
+
     const newObj = {
-      id: nanoid(),
+      id,
       name,
       email,
       phone,
