@@ -1,40 +1,44 @@
-//const { nanoid } = require('nanoid');
+require('colors');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
 const path = require('path');
+const HEAD_TABLE = `${"   Name".padEnd(20, ' ')}${"   Email".padEnd(50, ' ')}${"   Phone".padEnd(15, ' ')}\n`
 
 const contactsPath = path.join(__dirname, 'db', 'contacts.json');
 
-
+global.result = HEAD_TABLE;
 
 // Функція зчитує дані файлу contacts.json і виводить їх у консоль
 function listContacts() {
-    fs.readFile(contactsPath)
+ 
+  fs.readFile(contactsPath)
     .then(
       data => {
         const contacts = JSON.parse(data);
 
-        console.log("   Name".padEnd(20, ' '), "   Email".padEnd(50, ' '), "   Phone".padEnd(15, ' '));
-
-        contacts.forEach(({name, email, phone}) => {
-          console.log(name.padEnd(20, ' '), email.padEnd(50, ' ') , phone.padEnd(15, ' ') );  
-      });
+        result += contacts.map(({name, email, phone}) => {
+          return `${name.padEnd(20, ' ')}${email.padEnd(50, ' ')}${phone.padEnd(15, ' ')}\n`;  
+      }).join("");
+      console.log(result)
+      
     })
-  .catch(err => console.log(err.message));
+  .catch(err => console.log(err.message.red));
   }
  // listContacts();
  
  // Функція здійснює пошук контакту за id в файлі contacts.json і виводить результат пошуку у консоль
   function getContactById(contactId) {
+    console.log("get by id")
     fs.readFile(contactsPath)
   .then(
     data => {
       const contacts = JSON.parse(data);
-
-      console.log("   Name".padEnd(20, ' '), "   Email".padEnd(50, ' '), "   Phone".padEnd(15, ' '));
-
+     
       const findContact = contacts.find(({id}) =>  id === contactId );
-      console.log(findContact ? `${findContact.name.padEnd(20, ' ')} ${findContact.email.padEnd(50, ' ')} ${findContact.phone.padEnd(15, ' ')}` : null);
+      //console.log(findContact)
+      result += findContact ? `${findContact.name.padEnd(20, ' ')} ${findContact.email.padEnd(50, ' ')} ${findContact.phone.padEnd(15, ' ')}` : null;
+
+      console.log(result)
     }
     )
   .catch(err => console.log(err.message));
@@ -49,12 +53,11 @@ function listContacts() {
     data => {
       const contacts = JSON.parse(data);
 
-      console.log("   Name".padEnd(20, ' '), "   Email".padEnd(50, ' '), "   Phone".padEnd(15, ' '));
-
       const findContact = contacts.find(({id}) =>  id === contactId );
 
-      console.log(findContact ? `${findContact.name.padEnd(20, ' ')} ${findContact.email.padEnd(50, ' ')} ${findContact.phone.padEnd(15, ' ')}` : null);
+      result += findContact ? `${findContact.name.padEnd(20, ' ')} ${findContact.email.padEnd(50, ' ')} ${findContact.phone.padEnd(15, ' ')}` : null;
       
+      console.log(result)
 
       if (findContact) {
 
@@ -63,13 +66,14 @@ function listContacts() {
         fs.writeFile(contactsPath, JSON.stringify(filterContact))
         .then( data => {
           
-          console.log("The contact has been removed from the contact list");
+          console.log("The contact has been removed from the contact list".green);
         })
         .catch(err => console.log(err.message));
 
       }else {
-        console.log("Contact not found to the contact list")
+        console.log("Contact not found to the contact list".red)
       }
+
       })
   .catch(err => console.log(err.message));
   }
@@ -95,14 +99,13 @@ function listContacts() {
       
       const findContact = contacts.find(contact =>  contact.name === name && contact.email === email && contact.phone === phone );
 
+      result += `${name.padEnd(20, ' ')} ${email.padEnd(50, ' ')} ${phone.padEnd(15, ' ')}`;
 
-      console.log("   Name".padEnd(20, ' '), "   Email".padEnd(50, ' '), "   Phone".padEnd(15, ' '));
-        console.log( `${name.padEnd(20, ' ')} ${email.padEnd(50, ' ')} ${phone.padEnd(15, ' ')}` );
-
+      console.log(result)
 
       if(findContact) { 
         
-        console.log("The contact is in the contact list");
+        console.log("The contact is in the contact list".red);
         return;
       }
 
@@ -110,7 +113,7 @@ function listContacts() {
       fs.writeFile(contactsPath, JSON.stringify(contacts))
         .then( data => {
           
-          console.log("Contact added to the contact list");
+          console.log("Contact added to the contact list".green);
         })
         .catch(err => console.log(err.message));
       

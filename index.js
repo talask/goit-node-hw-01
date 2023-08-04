@@ -14,27 +14,38 @@ program.parse(process.argv);
 const argv = program.opts();
 
 // TODO: рефакторити
-function invokeAction({ action, id, name, email, phone }) {
+ function invokeAction({ action, id, name, email, phone }) {
+  console.log("action: ", action)
   switch (action) {
     case 'list':
-        contactsModule.listContacts()
-        break;
+      contactsModule.listContacts();
+       break;
 
     case 'get':
-        contactsModule.getContactById(id)
-        break;
+      contactsModule.getContactById(id)
+      break;
 
     case 'add':
         contactsModule.addContact(name, email, phone)
          break;
 
     case 'remove':
-        contactsModule.removeContact(id)
-        break;
+      contactsModule.removeContact(id)
+      break;
 
     default:
       console.warn('\x1B[31m Unknown action type!');
   }
 }
 
-invokeAction(argv);
+//invokeAction({ action: 'list' });
+invokeAction({ action: 'get', id: argv.id});
+
+//  invokeAction({ 
+//   action: 'add', 
+//   name: argv.name,  
+//   email: argv.email,
+//   phone: argv.phone,
+// });
+
+//invokeAction({ action: 'remove', id: argv.id });

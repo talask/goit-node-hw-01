@@ -14,8 +14,10 @@
     "nodemon": "^3.0.1"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "commander": "^11.0.0",
     "nanoid": "^4.0.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13"
   }
 }
