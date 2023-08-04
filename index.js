@@ -13,24 +13,54 @@ program.parse(process.argv);
 
 const argv = program.opts();
 
-// TODO: рефакторити
- function invokeAction({ action, id, name, email, phone }) {
+
+async function invokeAction({ action, id, name, email, phone }) {
   console.log("action: ", action)
   switch (action) {
+    
     case 'list':
-      contactsModule.listContacts();
+    
+      try {
+        const contacts = await contactsModule.listContacts();
+        console.log('\n Result: ', contacts);
+      } catch (error) {
+        console.error(error.message);
+      }
+    
        break;
 
+
     case 'get':
-      contactsModule.getContactById(id)
+
+      try {
+        const contact = await contactsModule.getContactById(id);
+        console.log('\n Result: ', contact);
+      } catch (error) {
+        console.error(error.message);
+      }
+
       break;
 
+
     case 'add':
-        contactsModule.addContact(name, email, phone)
+      try {
+        const contact = await contactsModule.addContact(name, email, phone)
+        console.log('\n Result: ', contact);
+      } catch (error) {
+        console.error(error.message);
+      }
+
          break;
 
     case 'remove':
-      contactsModule.removeContact(id)
+
+      try{
+        const contact = await contactsModule.removeContact(id)
+        console.log('\n Result: ', contact);
+      } catch (error) {
+        console.error(error.message);
+      }
+
       break;
 
     default:
@@ -38,8 +68,8 @@ const argv = program.opts();
   }
 }
 
-//invokeAction({ action: 'list' });
-invokeAction({ action: 'get', id: argv.id});
+invokeAction({ action: 'list' });
+//invokeAction({ action: 'get', id: argv.id});
 
 //  invokeAction({ 
 //   action: 'add', 
