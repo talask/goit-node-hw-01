@@ -102,7 +102,7 @@ async function listContacts() {
       if(findContact) { 
         
         console.log("The contact is in the contact list".yellow);
-        return;
+        return null;
       }
 
       contacts.push(newObj);
