@@ -22,7 +22,7 @@ async function invokeAction({ action, id, name, email, phone }) {
     
       try {
         const contacts = await contactsModule.listContacts();
-        console.log('\n Result: ', contacts);
+        console.table( contacts);
       } catch (error) {
         console.error(error.message);
       }
